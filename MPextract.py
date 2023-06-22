@@ -13,6 +13,9 @@
 
 import re #regex
 import os
+import asyncio
+from ffmpeg import Progress
+from ffmpeg.asyncio import FFmpeg
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -38,6 +41,29 @@ async def get_file_size(inputfile):
     fs = os.fstat(fd)
     filesize = fs.st_size
     return filesize
+
+async def transcode_video(filepath):
+    curr_dir = os.getcwd() + "/"
+    outputfilepath = str("converted" + str(filepath))
+    # print(curr_dir)
+    # ffmpeg = (
+    #     #os.system("ffmpeg -y -i TESTING.mp4  -c:v libx264 -crf 18 -vf format=yuv420p -c:a copy out.mp4")
+    #     FFmpeg()
+    #     .option("y")
+    #     .input(filepath)
+    #     .output(
+    #         "converted" + filepath,
+    #         {"codec:v": "libx264"},
+    #         vf="format: yuv420p",
+    #         preset="veryslow",
+    #         crf=18,
+    #     )
+    # )
+    # print("hello")
+    # await ffmpeg.execute()
+    os.system(f"ffmpeg -y -i {filepath}  -c:v libx264 -crf 18 -vf format=yuv420p -c:a copy {outputfilepath}")
+    #print("hi")
+
 async def get_file_data(inputfile):
     # read the inputfile
     await inputfile.seek(0)
@@ -94,6 +120,7 @@ async def recover_video(file: UploadFile):
         # open up a temporary file to store the video in
         #videofile = tempfile.NamedTemporaryFile(delete=True)
         vidpath = "TESTING.mp4"
+        transcoded_vidpath = "convertedTESTING.mp4"
         videofile = open(vidpath, "wb")
         
     
@@ -110,8 +137,10 @@ async def recover_video(file: UploadFile):
         # return the video portion of the file
         videofile.close()
 
-        if os.path.isfile(vidpath):
-            return FileResponse(vidpath)
+        await transcode_video(vidpath)
+
+        if os.path.isfile(transcoded_vidpath):
+            return FileResponse(transcoded_vidpath, media_type="video/mp4")
         else:
             return {"error": "vid not found"}
             
