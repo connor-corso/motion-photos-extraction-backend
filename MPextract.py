@@ -13,9 +13,9 @@
 
 import re #regex
 import os
-import asyncio
-from ffmpeg import Progress
-from ffmpeg.asyncio import FFmpeg
+#import asyncio
+#from ffmpeg import Progress
+#from ffmpeg.asyncio import FFmpeg
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
