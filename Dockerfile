@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM python:3.9
 WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
@@ -7,4 +7,4 @@ RUN apt update; \
     apt-get install -y ffmpeg; \ 
     rm -rf /var/lib/apt/lists/*
 
-CMD ["uvicorn", "MPextract:app"]
+CMD ["uvicorn", "MPextract:app", "--reload"]

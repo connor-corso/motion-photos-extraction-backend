@@ -13,6 +13,7 @@
 
 import re #regex
 import os
+import uvicorn
 #import asyncio
 #from ffmpeg import Progress
 #from ffmpeg.asyncio import FFmpeg
@@ -204,3 +205,7 @@ async def recover_image(file: UploadFile):
     except Exception as e:
         print(f"failed somewhere: {str(e)}")
         return {"result": "failed"}
+    
+
+if __name__ == "__main__":
+    uvicorn.run("MPextract:app", port=8000, log_level="debug")
